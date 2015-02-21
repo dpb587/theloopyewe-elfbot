@@ -87,6 +87,8 @@ rm -fr .tmp-gh-pages
 git push origin master "v${NEW_VERSION}" "gh-pages-$$:gh-pages"
 git branch -D "gh-pages-$$"
 
+sleep 5
+
 
 #
 # Create the GitHub Release w/ PHAR artifact
