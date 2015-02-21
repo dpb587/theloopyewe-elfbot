@@ -1,0 +1,13 @@
+#!/usr/bin/env php
+<?php
+
+if (false === @include_once __DIR__ . '/../vendor/autoload.php') {
+    fwrite(STDERR, 'You must first run composer install.' . "\n");
+    exit(1);
+}
+
+error_reporting(-1);
+#Symfony\Component\Debug\Debug::enable();
+
+$application = new TLE\ElfBot\Console\Application();
+$application->run();

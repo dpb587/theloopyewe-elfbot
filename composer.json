@@ -1,0 +1,21 @@
+{
+    "name" : "theloopyewe/elfbot",
+    "homepage" : "https://github.com/theloopyewe/elfbot",
+    "license" : "MIT",
+    "autoload" : {
+        "psr-0" : {
+            "TLE\\ElfBot" : "src"
+        }
+    },
+    "require" : {
+        "php" : ">=5.3.3",
+        "aws/aws-sdk-php" : "~2.7",
+        "guzzle/guzzle" : "~3.7",
+        "herrera-io/phar-update": "~2.0",
+        "monolog/monolog": "~1.12",
+        "symfony/console" : "~2.6",
+        "symfony/debug": "~2.6",
+        "symfony/options-resolver" : "~2.6",
+        "symfony/process" : "~2.6"
+    }
+}

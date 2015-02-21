@@ -1,0 +1,5 @@
+/etc/*
+!/etc/example.json
+/nbproject
+/vendor/
+/*.phar

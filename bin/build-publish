@@ -1,0 +1,115 @@
+#!/bin/bash
+
+# args: version-part-change changelog-file
+
+set -e
+set -u
+set -x
+
+VERSION_PART_CHANGE="${1}"
+CHANGELOG_FILE="${2}"
+
+REPO_OWNER=theloopyewe
+REPO_NAME=elfbot
+
+
+#
+# Figure out our next version
+#
+
+NEW_VERSION=$(
+    bumpversion \
+        --allow-dirty \
+        --current-version "$( cat VERSION )" \
+        --list \
+        "${VERSION_PART_CHANGE}" \
+    | awk -F= '{ print $2; }'
+)
+
+
+#
+# Commit a version marker and tag it
+#
+
+echo "${NEW_VERSION}" > VERSION
+git add VERSION
+( echo "Version ${NEW_VERSION}" ; echo "" ; cat "${CHANGELOG_FILE}" ) | git commit -F- VERSION
+
+git tag "v${NEW_VERSION}"
+
+
+#
+# Build our PHAR
+#
+
+php -dphar.readonly=0 box.phar build -v
+
+PHAR_FILE="build-v${NEW_VERSION}"
+PHAR_SHA1=$( set -e ; shasum "${PHAR_FILE}.phar" | awk '{ print $1 }' )
+
+
+#
+# Update gh-pages with our new versions manifest
+#
+
+git branch "gh-pages-$$" $( git rev-parse origin/gh-pages )
+git clone -b "gh-pages-$$" "file://${PWD}" .tmp-gh-pages
+pushd .tmp-gh-pages
+
+(
+    git show HEAD:versions.json \
+      | jq -c \
+        --arg NAME "${REPO_NAME}" \
+        --arg VERSION "${NEW_VERSION}" \
+        '.[] | select(.name != $NAME or .version != $VERSION) | .' \
+      ; \
+    jq --null-input \
+      --arg NAME "${REPO_NAME}.phar" \
+      --arg SHA1 "${PHAR_SHA1}" \
+      --arg URL "https://github.com/${REPO_OWNER}/${REPO_NAME}/releases/download/v${NEW_VERSION}/${REPO_NAME}.phar" \
+      --arg VERSION "${NEW_VERSION}" \
+      '{"name":$NAME,"sha1":$SHA1,"url":$URL,"version":$VERSION}'
+) | jq --slurp '.' > "versions.json"
+
+git add versions.json
+git commit -m "Update to v${NEW_VERSION}"
+git push
+
+popd
+
+rm -fr .tmp-gh-pages
+
+
+#
+# Push the updated branch, tag, and gh-pages
+#
+
+git push origin master "v${NEW_VERSION}" "gh-pages-$$:gh-pages"
+git branch -D "gh-pages-$$"
+
+
+#
+# Create the GitHub Release w/ PHAR artifact
+#
+
+cat "${CHANGELOG_FILE}" \
+  | jq --raw-input --slurp \
+    --arg TAG_NAME "v${NEW_VERSION}" \
+    '{"tag_name":$TAG_NAME,"name":$TAG_NAME,"body":.}' \
+  | curl \
+    -H "Authorization: token ${GITHUB_TOKEN}" \
+    -d @- \
+    "https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/releases"
+
+RELEASE_ID=$(
+  curl \
+    -H "Authorization: token ${GITHUB_TOKEN}" \
+    "https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/releases/tags/v${NEW_VERSION}" \
+    | jq -c '.id'
+)
+
+curl \
+  -H "Authorization: token ${GITHUB_TOKEN}" \
+  -H "Content-Type: application/octet-stream" \
+  --data-binary @"${PHAR_FILE}.phar" \
+  "https://uploads.github.com/repos/${REPO_OWNER}/${REPO_NAME}/releases/${RELEASE_ID}/assets?name=${REPO_NAME}.phar"
