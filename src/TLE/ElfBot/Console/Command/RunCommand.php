@@ -40,13 +40,16 @@ class RunCommand extends AbstractLoggerAwareCommand
 
         $wantsExit = false;
         $isWorking = false;
+        $timeoutQueue = null;
         $timeoutAlarm = time() + 20;
 
         $logger = $this->logger;
 
-        $signals = function ($signal) use (&$wantsExit, &$timeoutAlarm, &$isWorking, $logger) {
+        $signals = function ($signal) use (&$wantsExit, &$timeoutAlarm, &$timeoutQueue, &$isWorking, $logger) {
             if ($signal == SIGALRM) {
-                if ($timeoutAlarm < time()) {
+                $now = time();
+
+                if ($timeoutAlarm < $now) {
                     $logger->error('missed a SIGALRM');
 
                     if (!$isWorking) {
@@ -54,8 +57,19 @@ class RunCommand extends AbstractLoggerAwareCommand
 
                         posix_kill(getmypid(), SIGKILL);
                     }
+                } elseif ((null !== $timeoutQueue) && ($timeoutQueue < $now)) {
+                    if ($wantsExit) {
+                        // assume we've already been here
+                        $logger->info('suicide since queue polling timed out');
+
+                        posix_kill(getmypid(), SIGKILL);
+                    }
+
+                    $logger->error('queue polling is timing out');
+
+                    posix_kill(getmypid(), SIGTERM);
                 } else {
-                    $timeoutAlarm = time() + 20;
+                    $timeoutAlarm = $now + 20;
 
                     pcntl_alarm(16);
 
@@ -97,12 +111,16 @@ class RunCommand extends AbstractLoggerAwareCommand
         $this->logger->info('ready');
 
         while (!$wantsExit) {
+            $timeoutQueue = time() + 60;
+
             $msgpack = $queueClient->receiveMessage(
                 [
                     'QueueUrl' => $queueUrl,
                     'WaitTimeSeconds' => 20,
                 ]
             );
+
+            $timeoutQueue = null;
 
             if (!isset($msgpack['Messages'])) {
                 $this->logger->debug('no messages received');
