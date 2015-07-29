@@ -12,6 +12,8 @@ CHANGELOG_FILE="${2}"
 REPO_OWNER=theloopyewe
 REPO_NAME=elfbot
 
+ulimit -n 1024
+
 
 #
 # Figure out our next version
