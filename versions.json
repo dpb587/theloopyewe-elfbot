@@ -10,5 +10,11 @@
     "sha1": "618000bf026efd61eee745821883af529d2387a5",
     "url": "https://github.com/theloopyewe/elfbot/releases/download/v2.2.0/elfbot.phar",
     "version": "2.2.0"
+  },
+  {
+    "name": "elfbot.phar",
+    "sha1": "dc6b398de17135834a0ced0b976bdc730dcbe56f",
+    "url": "https://github.com/theloopyewe/elfbot/releases/download/v2.3.0/elfbot.phar",
+    "version": "2.3.0"
   }
 ]
