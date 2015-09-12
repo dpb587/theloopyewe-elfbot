@@ -40,7 +40,7 @@ class Manifest extends AbstractManifest
 
     public function execute(LoggerInterface $logger, array $options)
     {
-        $res = $this->application->getHttpClient()->get($options['label_url'])->send();
+        $res = $this->application->getHttpClient()->request('GET', $options['label_url']);
 
         file_put_contents(
             $r1 = (uniqid('/tmp/tle-r1-') . '.applescript'),
@@ -49,7 +49,7 @@ class Manifest extends AbstractManifest
 
         file_put_contents(
             $r2 = (uniqid('/tmp/tle-r2-') . '.label'),
-            $res->getBody(true)
+            $res->getBody()->getContents()
         );
 
         $p = new Process(

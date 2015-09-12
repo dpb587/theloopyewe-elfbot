@@ -120,11 +120,13 @@ class Manifest extends AbstractManifest
 
             $logger->debug('posting ' . json_encode($data, JSON_UNESCAPED_SLASHES));
 
-            $this->application->getHttpClient()->post(
+            $this->application->getHttpClient()->request(
+                'POST',
                 $options['result_url'],
-                null,
-                $data
-            )->send();
+                [
+                    'form_params' => $data,
+                ]
+            );
         }
     }
 }

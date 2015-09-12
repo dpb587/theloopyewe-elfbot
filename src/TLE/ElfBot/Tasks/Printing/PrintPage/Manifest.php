@@ -54,11 +54,11 @@ class Manifest extends AbstractManifest
     {
         $logger->debug('retrieving source');
 
-        $res = $this->application->getHttpClient()->get($options['source_url'])->send();
+        $res = $this->application->getHttpClient()->request('GET', $options['source_url']);
 
         file_put_contents(
             $r1 = (uniqid('/tmp/tle-r1-') . '.data'),
-            $res->getBody(true)
+            $res->getBody()->getContents()
         );
 
         $res->getContentType();

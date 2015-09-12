@@ -16,7 +16,7 @@ use Monolog\Formatter\LineFormatter;
 use Guzzle\Plugin\Cookie\CookiePlugin;
 use Guzzle\Plugin\Cookie\CookieJar\ArrayCookieJar;
 use Aws\Sqs\SqsClient;
-use Guzzle\Http\Client;
+use GuzzleHttp\Client;
 
 class Application extends BaseApplication
 {
@@ -123,29 +123,22 @@ class Application extends BaseApplication
             $this->logger->info('loading config file "' . $configFile . '"');
 
             if (isset($this->config['http'])) {
-                $this->httpClient = new Client(
-                    'https://' . $this->config['http']['host']
-                );
+                $httpClientOptions = [
+                    'base_uri' => 'https://' . $this->config['http']['host'],
+                    'cookies' => new \GuzzleHttp\Cookie\CookieJar(),
+                ];
 
                 if (isset($this->config['http']['auth']['basic'])) {
-                    $this->httpClient->setDefaultOption(
-                        'auth',
-                        [
-                            $this->config['http']['auth']['basic']['username'],
-                            $this->config['http']['auth']['basic']['password'],
-                            'Basic'
-                        ]
-                    );
+                    $httpClientOptions['auth'] = [
+                        $this->config['http']['auth']['basic']['username'],
+                        $this->config['http']['auth']['basic']['password'],
+                    ];
                 }
+
+                $this->httpClient = new Client($httpClientOptions);
             }
 
             if (isset($this->config['queue'])) {
-                $this->httpClient->addSubscriber(
-                    new CookiePlugin(
-                        new ArrayCookieJar()
-                    )
-                );
-
                 $this->queueClient = SqsClient::factory(
                     [
                         'key' => $this->config['queue']['aws_sqs']['key'],

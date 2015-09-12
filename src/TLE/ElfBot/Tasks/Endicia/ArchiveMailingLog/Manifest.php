@@ -3,7 +3,7 @@
 namespace TLE\ElfBot\Tasks\Endicia\ArchiveMailingLog;
 
 use TLE\ElfBot\Task\AbstractManifest;
-use Guzzle\Http\Client;
+use GuzzleHttp\Client;
 use Symfony\Component\Process\Process;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Psr\Log\LoggerInterface;
@@ -108,17 +108,19 @@ class Manifest extends AbstractManifest
             $logger->debug('creating remote archive target');
 
             try {
-                $res = $this->application->getHttpClient()->post(
+                $res = $this->application->getHttpClient()->request(
+                    'POST',
                     $options['prepare_url'],
-                    null,
                     [
-                        'path' => $path,
-                        'hostname' => gethostname(),
-                        'source' => 'endicia.mailinglog',
-                        'size' => filesize($localname . '.xml'),
-                        'md5' => $xmlmd5,
+                        'form_params' => [
+                            'path' => $path,
+                            'hostname' => gethostname(),
+                            'source' => 'endicia.mailinglog',
+                            'size' => filesize($localname . '.xml'),
+                            'md5' => $xmlmd5,
+                        ],
                     ]
-                )->send();
+                );
             } catch (\Exception $e) {
                 $logger->critical($e->getResponse()->getBody(true));
 
@@ -136,16 +138,19 @@ class Manifest extends AbstractManifest
 
             try {
                 $awsraw = new Client();
-                $awsraw->put(
+                $awsraw->request(
+                    'PUT',
                     $prepare['upload_url'],
                     [
-                        'Content-Type' => 'application/x-plist',
-                        'Content-MD5' => base64_encode(hex2bin($xmlmd5)),
-                        'Content-Length' => filesize($localname . '.xml'),
-                        'x-amz-acl' => 'private',
-                    ],
-                    fopen($localname . '.xml', 'r')
-                )->send();
+                        'headers' => [
+                            'Content-Type' => 'application/x-plist',
+                            'Content-MD5' => base64_encode(hex2bin($xmlmd5)),
+                            'Content-Length' => filesize($localname . '.xml'),
+                            'x-amz-acl' => 'private',
+                        ],
+                        'body' => fopen($localname . '.xml', 'r'),
+                    ]
+                );
             } catch (\Exception $e) {
                 $logger->critical($e->getResponse()->getBody(true));
 
@@ -160,13 +165,15 @@ class Manifest extends AbstractManifest
             $logger->debug('closing upload');
 
             try {
-                $this->application->getHttpClient()->post(
+                $this->application->getHttpClient()->request(
+                    'POST',
                     $options['finish_url'],
-                    null,
                     [
-                        'id' => $prepare['id'],
+                        'form_params' => [
+                            'id' => $prepare['id'],
+                        ],
                     ]
-                )->send();
+                );
             } catch (\Exception $e) {
                 $logger->critical($e->getResponse()->getBody(true));
 

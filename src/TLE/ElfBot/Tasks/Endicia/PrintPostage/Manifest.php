@@ -43,9 +43,9 @@ class Manifest extends AbstractManifest
     {
         $logger->debug('retrieving dazzle xml');
 
-        $res = $this->application->getHttpClient()->get($options['dazzlexml'])->send();
+        $res = $this->application->getHttpClient()->request('GET', $options['dazzlexml']);
 
-        $logger->debug($res->getBody(true));
+        $logger->debug($res->getBody()->getContents());
 
 
         $logger->debug('sending dazzle to endicia');
@@ -67,12 +67,12 @@ class Manifest extends AbstractManifest
 
         $logger->debug('uploading endicia response');
 
-        $this->application->getHttpClient()->send(
-            $this->application->getHttpClient()->put(
-                $options['manifestxml'],
-                [],
-                $p->getOutput()
-            )
+        $this->application->getHttpClient()->request(
+            'PUT',
+            $options['manifestxml'],
+            [
+                'body' => $p->getOutput(),
+            ]
         );
     }
 }
