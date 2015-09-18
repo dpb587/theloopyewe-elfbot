@@ -7,7 +7,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
-class InstallLaunchdCommand extends AbstractLoggerAwareCommand
+class InstallLaunchdCommand extends AbstractCommand
 {
     protected function configure()
     {
@@ -56,8 +56,11 @@ class InstallLaunchdCommand extends AbstractLoggerAwareCommand
         }
 
         $c1[] = '            <string>run</string>';
-        $c1[] = '            <string>--config-file</string>';
-        $c1[] = '            <string>'. htmlentities($input->getParameterOption([ '--config-file', '-c' ])) . '</string>';
+
+        foreach ($input->getOption('config') as $config) {
+            $c1[] = '            <string>--config='. htmlentities($config) . '</string>';
+        }
+
         $c1[] = '        </array>';
         $c1[] = '        <key>StandardOutPath</key>';
         $c1[] = '        <string>' . $logPath . '</string>';
