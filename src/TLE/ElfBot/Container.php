@@ -14,6 +14,8 @@ class Container extends PimpleContainer
     {
         parent::__construct();
 
+        $this['env.user'] = getenv('USER');
+
         $this['runtime.name'] = Manifest::NAME;
         $this['runtime.version'] = Manifest::VERSION;
         $this['runtime.commit'] = Manifest::COMMIT;

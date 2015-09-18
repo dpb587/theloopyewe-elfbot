@@ -48,14 +48,28 @@ class ContainerProvider implements ServiceProviderInterface
                 }
             }
 
-            if (isset($config['queue'])) {
-                if (isset($config['queue']['aws_sqs'])) {
-                    $workerConfig = $config['queue']['aws_sqs'];
+            if (isset($config['worker'])) {
+                if (isset($config['worker']['aws_sqs'])) {
+                    $workerConfig = $config['worker']['aws_sqs'];
 
                     $pimple['worker'] = function ($c) use ($workerConfig) {
                         return new Worker\AwsSqs\Worker($c, $workerConfig);
                     };
                 }
+            }
+
+            if (isset($config['worker_events'])) {
+                $workerEvents = $config['worker_events'];
+
+                $pimple['worker_events'] = function ($c) use ($workerEvents) {
+                    $class = $workerEvents['class'];
+
+                    return new $class($c, isset($workerEvents['options']) ? $workerEvents['options'] : []);
+                };
+            } else {
+                $pimple['worker_events'] = function () {
+                    return new Worker\AlwaysEvents();
+                };
             }
 
             if (isset($config['http'])) {

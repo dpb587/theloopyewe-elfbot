@@ -24,6 +24,10 @@ class WorkCommand extends AbstractCommand
         $container = $this->getContainer($input, $output);
 
         $logger = $container['logger'];
+        $worker = $container['worker'];
+        $workerEvents = $container['worker_events'];
+
+        $canWork = true;
         $wantsExit = false;
 
         $tasksLimit = $input->getOption('max-tasks');
@@ -88,7 +92,15 @@ class WorkCommand extends AbstractCommand
         };
 
         while (!$wantsExit) {
-            $container['worker']->work($taskCallback);
+            if ($canWork) {
+                $canWork = (false !== $worker->work($taskCallback));
+            } else {
+                $canWork = $workerEvents->canWork();
+
+                if (!$canWork && !$wantsExit) {
+                    sleep(60);
+                }
+            }
 
             if ((null !== $tasksLimit) && ($tasksCount >= $tasksLimit)) {
                 $logger->warn(sprintf('stopping (%s tasks were run)', $tasksCount));

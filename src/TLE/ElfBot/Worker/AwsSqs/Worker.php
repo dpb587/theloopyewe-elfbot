@@ -35,12 +35,12 @@ class Worker
 
     public function work($taskCallback)
     {
-        $msgpack = $this->client->receiveMessage(
-            [
-                'QueueUrl' => $this->queue,
-                'WaitTimeSeconds' => 20,
-            ]
-        );
+        $msgpack = $this->client->receiveMessage([
+            'QueueUrl' => $this->queue,
+            'WaitTimeSeconds' => 20,
+            'MaxNumberOfMessages' => 1,
+            'VisibilityTimeout' => 20,
+        ]);
 
         if (!isset($msgpack['Messages'])) {
             $this->container['logger']->debug('nothing to do');
@@ -51,12 +51,16 @@ class Worker
         foreach ($msgpack['Messages'] as $msg) {
             $this->container['logger']->debug(sprintf('message %s received: %s', $msg['MessageId'], $msg['Body']));
 
-            $this->client->deleteMessage(
-                [
-                    'QueueUrl' => $this->queue,
-                    'ReceiptHandle' => $msg['ReceiptHandle'],
-                ]
-            );
+            if (!$this->container['worker_events']->canAcceptTask()) {
+                $this->container['logger']->debug(sprintf('message %s rejected', $msg['MessageId']));
+
+                return false;
+            }
+
+            $this->client->deleteMessage([
+                'QueueUrl' => $this->queue,
+                'ReceiptHandle' => $msg['ReceiptHandle'],
+            ]);
 
             $data = json_decode($msg['Body'], true);
 
