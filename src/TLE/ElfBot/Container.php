@@ -55,5 +55,9 @@ class Container extends PimpleContainer
         $this['task_factory'] = function ($c) {
             return new Task\TaskFactory($c);
         };
+
+        $this['http.default'] = function () {
+            return new \GuzzleHttp\Client();
+        };
     }
 }
