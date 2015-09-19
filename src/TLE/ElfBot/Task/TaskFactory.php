@@ -5,13 +5,10 @@ namespace TLE\ElfBot\Task;
 use Psr\Log\LoggerInterface;
 use Pimple\Container;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
-use Symfony\Component\Config\Definition\Processor;
 
 class TaskFactory
 {
     protected $container;
-
-    protected $configProcessor;
 
     protected $taskDefinitions = [];
 
@@ -19,7 +16,6 @@ class TaskFactory
     {
         $this->container = $container;
 
-        $this->configProcessor = new Processor();
         $this->registerBuiltins();
     }
 
@@ -36,7 +32,7 @@ class TaskFactory
     {
         list($serviceDefinition) = $this->getDefinition($class);
 
-        $processedOptions = $this->configProcessor->process($serviceDefinition, [ $options ]);
+        $processedOptions = $this->container['config_processor']->process($serviceDefinition, [ $options ]);
 
         $this->container['task.' . $name] = function ($c) use ($class, $processedOptions) {
             return new $class($c, $processedOptions);
@@ -51,7 +47,7 @@ class TaskFactory
 
         list(, $taskDefinition) = $this->getDefinition(get_class($task));
 
-        $processedOptions = $this->configProcessor->process(
+        $processedOptions = $this->container['config_processor']->process(
             $taskDefinition,
             [
                 $options,

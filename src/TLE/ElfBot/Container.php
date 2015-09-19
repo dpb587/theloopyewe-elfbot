@@ -7,6 +7,7 @@ use Pimple\Container as PimpleContainer;
 use Monolog\Formatter\LineFormatter;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
+use Symfony\Component\Config\Definition\Processor;
 
 class Container extends PimpleContainer
 {
@@ -58,6 +59,10 @@ class Container extends PimpleContainer
 
         $this['http.default'] = function () {
             return new \GuzzleHttp\Client();
+        };
+
+        $this['config_processor'] = function () {
+            return new Processor();
         };
     }
 }
