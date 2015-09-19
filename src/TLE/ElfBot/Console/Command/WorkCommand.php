@@ -51,22 +51,22 @@ class WorkCommand extends AbstractCommand
         pcntl_signal(SIGINT, $signals);
         pcntl_signal(SIGTERM, $signals);
 
-        $taskCallback = function ($id, $task, array $options) use ($container, &$tasksCount) {
+        $taskCallback = function ($id, $taskName, array $options) use ($container, &$tasksCount) {
             $tasksCount += 1;
 
             $logger = new Logger(sprintf('%s/%s', $container['runtime.name'] . ($container['logger.channel'] ? ('/' . $container['logger.channel']) : ''), $id));
             $logger->pushHandler($container['logger.handler']);
 
-            $logger->debug($task . ' started');
+            $logger->debug($taskName . ' started');
 
             $mt = microtime(true);
 
             try {
-                $container['task_factory']->execute($logger, $task, $options);
+                $container['task_factory']->execute($logger, $taskName, $options);
             } catch (\Exception $e) {
                 $duration = ceil((microtime(true) - $mt) * 1000);
 
-                $logger->info($task . ' failed (' . $duration . 'ms)');
+                $logger->info($taskName . ' failed (' . $duration . 'ms)');
 
                 $logger->critical($e->getMessage());
 
@@ -86,7 +86,7 @@ class WorkCommand extends AbstractCommand
 
             $duration = ceil((microtime(true) - $mt) * 1000);
 
-            $logger->info($task . ' completed (' . $duration . 'ms)');
+            $logger->info($taskName . ' completed (' . $duration . 'ms)');
 
             return true;
         };

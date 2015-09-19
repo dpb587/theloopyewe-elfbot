@@ -23,7 +23,7 @@ class TaskCommand extends AbstractCommand
         $container = $this->getContainer($input, $output);
 
         if ($input->getArgument('name')) {
-            $task = $container['task.' . $input->getArgument('name')];
+            $task = $container['task_factory']->getTask($input->getArgument('name'));
 
             list($serviceDefinition, $taskDefinition) = $container['task_factory']->getDefinition(get_class($task));
 
@@ -55,21 +55,7 @@ class TaskCommand extends AbstractCommand
                 )
             );
         } else {
-            $tasks = array_map(
-                function ($key) {
-                    return substr($key, 5);
-                },
-                array_filter(
-                    $container->keys(),
-                    function ($key) {
-                        return 'task.' == substr($key, 0, 5);
-                    }
-                )
-            );
-
-            sort($tasks);
-
-            foreach ($tasks as $task) {
+            foreach ($container['task_factory']->getTaskNames() as $task) {
                 $output->writeln($task);
             }
         }

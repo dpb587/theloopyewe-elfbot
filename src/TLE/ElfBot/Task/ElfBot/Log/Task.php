@@ -10,7 +10,7 @@ class Task extends AbstractTask
 {
     static public function getDefinition(NodeDefinition $service, NodeDefinition $task)
     {
-        $service->children()
+        $task->children()
             ->enumNode('level')
                 ->info('The level to log at')
                 ->defaultValue('emergency')
@@ -25,10 +25,6 @@ class Task extends AbstractTask
                     'debug',
                 ])
                 ->end()
-            ->end()
-            ;
-
-        $task->children()
             ->scalarNode('message')
                 ->info('The message to log')
                 ->isRequired()
@@ -39,6 +35,6 @@ class Task extends AbstractTask
 
     public function execute(LoggerInterface $logger, array $options)
     {
-        $logger->log($this->options['level'], $options['message']);
+        $logger->log($options['level'], $options['message']);
     }
 }

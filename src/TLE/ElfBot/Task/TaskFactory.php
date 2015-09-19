@@ -43,7 +43,7 @@ class TaskFactory
 
     public function execute(LoggerInterface $logger, $name, array $options = [])
     {
-        $task = $this->container['task.' . $name];
+        $task = $this->getTask($name);
 
         list(, $taskDefinition) = $this->getDefinition(get_class($task));
 
@@ -79,5 +79,29 @@ class TaskFactory
         }
 
         return $this->taskDefinitions[$class];
+    }
+
+    public function getTask($taskName)
+    {
+        return $this->container['task.' . $taskName];
+    }
+
+    public function getTaskNames()
+    {
+        $tasks = array_map(
+            function ($key) {
+                return substr($key, 5);
+            },
+            array_filter(
+                $this->container->keys(),
+                function ($key) {
+                    return 'task.' == substr($key, 0, 5);
+                }
+            )
+        );
+
+        sort($tasks);
+
+        return $tasks;
     }
 }
