@@ -18,7 +18,7 @@
     },
     "tasks" : {
         "core.self_update" : {
-            "class" : "TLE\\Elfbot\\Tasks\\Core\\SelfUpdate\\Manifest",
+            "class" : "TLE\\Elfbot\\Tasks\\Elfbot\\Update\\Manifest",
             "options" : {
                 "manifest_url" : "https://theloopyewe.github.io/elfbot/versions.json"
             }
