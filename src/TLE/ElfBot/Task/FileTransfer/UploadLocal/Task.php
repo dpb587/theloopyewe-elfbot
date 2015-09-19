@@ -1,6 +1,6 @@
 <?php
 
-namespace TLE\ElfBot\Task\FileTransfer\LocalUpload;
+namespace TLE\ElfBot\Task\FileTransfer\UploadLocal;
 
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use TLE\ElfBot\Task\AbstractTask;
@@ -29,18 +29,18 @@ class Task extends AbstractTask
                     ->end()
                 ->end()
             ->scalarNode('target_http')
-                ->info('HTTP Client for retrieval')
+                ->info('HTTP Client for upload')
                 ->defaultValue('app')
                 ->end()
             ->scalarNode('target_method')
-                ->info('HTTP Method for retrieval')
+                ->info('HTTP Method for upload')
                 ->defaultValue('PUT')
                 ->end()
             ->scalarNode('target_url')
-                ->info('HTTP URL for retrieval')
+                ->info('HTTP URL for upload')
                 ->end()
             ->arrayNode('target_options')
-                ->info('HTTP Client options for retrieval')
+                ->info('HTTP Client options for upload')
                 ->end()
             ->end()
             ;
@@ -97,14 +97,10 @@ class Task extends AbstractTask
 
         $logger->debug('uploading ' . $spl->getSize() . ' bytes');
 
-        try {
-            $this->container['http.' . $this->options['target_http']]->request(
-                $this->options['target_method'],
-                isset($this->options['target_url']) ? $this->options['target_url'] : null,
-                $targetOptions
-            );
-        } catch (\Exception $e) {
-            throw $e;
-        }
+        $this->container['http.' . $this->options['target_http']]->request(
+            $this->options['target_method'],
+            isset($this->options['target_url']) ? $this->options['target_url'] : null,
+            $targetOptions
+        );
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace TLE\ElfBot\Task\FileTransfer\HttpMirror;
+namespace TLE\ElfBot\Task\FileTransfer\MirrorHttp;
 
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use TLE\ElfBot\Task\AbstractTask;
