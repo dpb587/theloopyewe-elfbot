@@ -10,7 +10,7 @@ class Application extends BaseApplication
 {
     public function __construct()
     {
-        parent::__construct(Manifest::NAME, Manifest::VERSION);
+        parent::__construct(Manifest::NAME, ltrim(Manifest::VERSION, 'v'));
     }
     
     protected function getDefaultCommands()

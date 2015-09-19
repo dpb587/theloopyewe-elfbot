@@ -13,43 +13,24 @@
         },
         {
             "name": "*.php",
-            "in" : "vendor/composer"
-        },
-        {
-            "name": "*.php",
             "in" : [
+                "vendor/composer",
                 "vendor/aws/aws-sdk-php/src/Aws/Common",
                 "vendor/aws/aws-sdk-php/src/Aws/S3",
-                "vendor/aws/aws-sdk-php/src/Aws/Sqs"
-            ]
-        },
-        {
-            "name": "*.php",
-            "in" : "vendor/guzzle/guzzle/src"
-        },
-        {
-            "name" : "*.php",
-            "in" : [
+                "vendor/aws/aws-sdk-php/src/Aws/Sqs",
+                "vendor/guzzle/guzzle/src",
+                "vendor/guzzlehttp/guzzle/src",
+                "vendor/guzzlehttp/promises/src",
+                "vendor/guzzlehttp/psr7/src",
                 "vendor/herrera-io/json/src",
                 "vendor/herrera-io/phar-update/src",
-                "vendor/herrera-io/version/src"
+                "vendor/herrera-io/version/src",
+                "vendor/justinrainbow/json-schema/src",
+                "vendor/monolog/monolog/src",
+                "vendor/pimple/pimple/src",
+                "vendor/psr",
+                "vendor/seld/jsonlint/src"
             ]
-        },
-        {
-            "name" : "*.php",
-            "in" : "vendor/justinrainbow/json-schema/src"
-        },
-        {
-            "name" : "*.php",
-            "in" : "vendor/monolog/monolog/src"
-        },
-        {
-            "name" : "*.php",
-            "in" : "vendor/psr"
-        },
-        {
-            "name" : "*.php",
-            "in" : "vendor/seld/jsonlint/src"
         },
         {
             "name": "*.php",
@@ -62,6 +43,6 @@
     "git-commit": "git-commit",
     "git-version": "git-version",
     "main": "bin/console",
-    "output": "build-@git-version@.phar",
+    "output": "elfbot-@git-version@.phar",
     "stub": true
 }

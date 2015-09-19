@@ -1,0 +1,8 @@
+#!/bin/bash
+
+set -e
+set -x
+
+ulimit -n 1024
+
+php -dphar.readonly=0 box.phar build -v
