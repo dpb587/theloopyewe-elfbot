@@ -19,6 +19,7 @@ class AbstractCommand extends Command
     {
         return $this
             ->addOption('config', null, InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED, 'Path to config file')
+            ->addOption('log-path', null, InputOption::VALUE_REQUIRED, 'Log file')
             ;
     }
 
@@ -27,6 +28,11 @@ class AbstractCommand extends Command
         $container = new Container();
 
         $container['logger.channel'] = $this->getName();
+
+        if (null != $input->getOption('log-path')) {
+            $container['logger.path'] = $input->getOption('log-path');
+        }
+
         $container['runtime.log_level'] = 500 - (100 * $output->getVerbosity());
 
         $provider = new ContainerProvider($input->getOption('config'));

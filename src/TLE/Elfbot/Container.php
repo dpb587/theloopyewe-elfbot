@@ -35,8 +35,10 @@ class Container extends PimpleContainer
             return new LineFormatter("%datetime% %channel% %level_name% %message%\n", 'c');
         };
 
+        $this['logger.path'] = 'php://stderr';
+
         $this['logger.handler'] = function ($c) {
-            $handler = new StreamHandler(fopen('php://stderr', 'w'), $c['runtime.log_level']);
+            $handler = new StreamHandler(fopen($c['logger.path'], 'a'), $c['runtime.log_level']);
             $handler->setFormatter($c['logger.formatter']);
 
             return $handler;
