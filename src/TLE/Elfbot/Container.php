@@ -38,7 +38,11 @@ class Container extends PimpleContainer
         $this['logger.path'] = 'php://stderr';
 
         $this['logger.handler'] = function ($c) {
-            $handler = new StreamHandler(fopen($c['logger.path'], 'a'), $c['runtime.log_level']);
+            if (false === strpos($c['logger.path'], '://')) {
+                $path = $c['filesystem']->tildify($c['logger.path']);
+            }
+
+            $handler = new StreamHandler(fopen($path, 'a'), $c['runtime.log_level']);
             $handler->setFormatter($c['logger.formatter']);
 
             return $handler;
