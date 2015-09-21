@@ -32,7 +32,7 @@ class ContainerProvider implements ServiceProviderInterface
             }
 
             $configType = pathinfo($configFile, PATHINFO_EXTENSION);
-            $configData = file_get_contents($configFile);
+            $configData = file_get_contents($resolvedConfigFile);
 
             if (in_array($configType, [ 'yml', 'yaml' ])) {
                 $config = Yaml::parse($configData);
