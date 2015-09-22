@@ -31,7 +31,7 @@ class Task extends AbstractTask
                 ->info('URL to load the DAZzle XML postage data')
                 ->isRequired()
                 ->end()
-            ->scalarNode('finish_url')
+            ->scalarNode('manifestxml')
                 ->info('URL to post the postage result')
                 ->isRequired()
                 ->end()

@@ -45,7 +45,7 @@ class Task extends AbstractTask
         $p = new Process(
             sprintf(
                 '%s %s %s',
-                $this->options['executable'],
+                $this->options['osascript'],
                 $r1,
                 $options['amount']
             )
