@@ -3,7 +3,6 @@
 namespace TLE\Elfbot\Console;
 
 use TLE\Elfbot\Manifest;
-use TLE\Elfbot\Console\Command as ConsoleCommand;
 use Symfony\Component\Console\Application as BaseApplication;
 
 class Application extends BaseApplication
@@ -17,10 +16,10 @@ class Application extends BaseApplication
     {
         $commands = parent::getDefaultCommands();
 
-        $commands[] = new ConsoleCommand\InstallLaunchdCommand();
-        $commands[] = new ConsoleCommand\ExecCommand();
-        $commands[] = new ConsoleCommand\TaskCommand();
-        $commands[] = new ConsoleCommand\WorkCommand();
+        $commands[] = new Command\InstallLaunchdCommand();
+        $commands[] = new Command\ExecCommand();
+        $commands[] = new Command\TaskCommand();
+        $commands[] = new Command\WorkCommand();
 
         return $commands;
     }
