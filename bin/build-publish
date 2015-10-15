@@ -12,8 +12,6 @@ CHANGELOG_FILE="${2}"
 REPO_OWNER=theloopyewe
 REPO_NAME=elfbot
 
-ulimit -n 1024
-
 
 #
 # Figure out our next version
@@ -44,7 +42,7 @@ git tag "v${NEW_VERSION}"
 # Build our PHAR
 #
 
-php -dphar.readonly=0 box.phar build -v
+./bin/box
 
 PHAR_FILE="build-v${NEW_VERSION}"
 PHAR_SHA1=$( set -e ; shasum "${PHAR_FILE}.phar" | awk '{ print $1 }' )

@@ -18,32 +18,32 @@
     },
     "tasks" : {
         "core.self_update" : {
-            "class" : "TLE\\ElfBot\\Tasks\\Core\\SelfUpdate\\Manifest",
+            "class" : "TLE\\Elfbot\\Tasks\\Elfbot\\Update\\Manifest",
             "options" : {
                 "manifest_url" : "https://theloopyewe.github.io/elfbot/versions.json"
             }
         },
         "shop_webcam.capture_upload_image" : {
-            "class" : "TLE\\ElfBot\\Tasks\\ShopWebcam\\CaptureUploadImage\\Manifest",
+            "class" : "TLE\\Elfbot\\Tasks\\ShopWebcam\\CaptureUploadImage\\Manifest",
             "options" : {
                 "source" : "http://username:password@192.0.2.1/SnapshotJPEG?Resolution=640x480",
                 "endpoint" : "/api/web/webcam/upload-latest?id=7257e913-b628-4828-9701-a387353d1964"
             }
         },
         "endicia.archive_mailing_log" : {
-            "class" : "TLE\\ElfBot\\Tasks\\Endicia\\ArchiveMailingLog\\Manifest"
+            "class" : "TLE\\Elfbot\\Tasks\\Endicia\\ArchiveMailingLog\\Manifest"
         },
         "endicia.print_postage" : {
-            "class" : "TLE\\ElfBot\\Tasks\\Endicia\\PrintPostage\\Manifest"
+            "class" : "TLE\\Elfbot\\Tasks\\Endicia\\PrintPostage\\Manifest"
         },
         "endicia.purchase_postage" : {
-            "class" : "TLE\\ElfBot\\Tasks\\Endicia\\PurchasePostage\\Manifest"
+            "class" : "TLE\\Elfbot\\Tasks\\Endicia\\PurchasePostage\\Manifest"
         },
         "dymo_label.print_label" : {
-            "class" : "TLE\\ElfBot\\Tasks\\DYMOLabel\\PrintLabel\\Manifest"
+            "class" : "TLE\\Elfbot\\Tasks\\DYMOLabel\\PrintLabel\\Manifest"
         },
         "printing.print_example" : {
-            "class" : "TLE\\ElfBot\\Tasks\\Printing\\PrintPDF\\Manifest",
+            "class" : "TLE\\Elfbot\\Tasks\\Printing\\PrintPDF\\Manifest",
             "options" : {
                 "queue_name" : "Dell_B3460dn"
             }

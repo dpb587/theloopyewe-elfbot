@@ -34,16 +34,16 @@ file.
 
     # run it
     $ ~/Applications/elfbot.phar -vvv \
-      --config-file="${HOME}/Library/Preferences/com.theloopyewe.elfbot.default.json" \
+      --config="${HOME}/Library/Preferences/com.theloopyewe.elfbot.default.json" \
       run
 
     # or install and start it as a launchd agent
     $ ~/Applications/elfbot.phar -vvv \
-      --config-file="${HOME}/Library/Preferences/com.theloopyewe.elfbot.default.json" \
+      --config="${HOME}/Library/Preferences/com.theloopyewe.elfbot.default.json" \
       install-launchd \
       --start \
       --executable=/usr/local/php5-5.5.5-20131020-222726/bin/php \
-      com.theloopyewe.elfbot.default.n0
+      com.theloopyewe.elfbot.default
 
 
 ### Development
@@ -51,7 +51,7 @@ file.
     $ git clone git@github.com:theloopyewe/elfbot.git
     $ cd elfbot/
     $ composer.phar install
-    $ ./bin/console -vvv --config-file=etc/local.json run
+    $ ./bin/console -vvv --config=etc/dev.json work
 
 
 #### Release
