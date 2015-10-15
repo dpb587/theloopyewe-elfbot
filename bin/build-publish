@@ -44,7 +44,7 @@ git tag "v${NEW_VERSION}"
 
 ./bin/box
 
-PHAR_FILE="build-v${NEW_VERSION}"
+PHAR_FILE="elfbot-v${NEW_VERSION}"
 PHAR_SHA1=$( set -e ; shasum "${PHAR_FILE}.phar" | awk '{ print $1 }' )
 
 
