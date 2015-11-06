@@ -68,8 +68,7 @@ class Task extends AbstractTask
             $res->getBody()->getContents()
         );
 
-        $res->getContentType();
-        if ($res->isContentType('text/html')) {
+        if (false !== stripos($res->getHeaderLine('Content-Type'), 'text/html')) {
             if (null == $this->options['wkhtmltopdf']) {
                 throw new \LogicException('Unable to convert text/html without wkhtmltopdf configured.');
             }
@@ -100,11 +99,11 @@ class Task extends AbstractTask
             );
 
             $pdffile = $r2;
-        } elseif ($res->isContentType('application/pdf')) {
+        } elseif (false !== stripos($res->getHeaderLine('Content-Type'), 'application/pdf')) {
             $r2 = null;
             $pdffile = $r1;
         } else {
-            throw new \LogicException('Cannot print mimetype (' . $res->getHeader('content-type') . ')');
+            throw new \LogicException('Cannot print mimetype (' . $res->getHeaderLine('content-type') . ')');
         }
 
         $logger->debug('printing pdf');
