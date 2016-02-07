@@ -19,7 +19,7 @@ class Task extends AbstractTask
                 ->beforeNormalization()
                     ->always()
                     ->then(function ($value) {
-                        return (new ExecutableFinder())->find($value);
+                        return ('/' == $value[0]) ? $value : (new ExecutableFinder())->find($value);
                     })
                     ->end()
                 ->end()
